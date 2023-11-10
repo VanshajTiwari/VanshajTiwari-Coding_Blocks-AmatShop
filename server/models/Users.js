@@ -18,7 +18,30 @@ const userSchema = new mongoose.Schema({
   isAdmin: {
     type: Boolean,
     default: false,
-  }
+  },
+  username: {
+    type: String,
+    required: [true, 'Please enter a username'],
+    unique: false,
+  },
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: String,
+  },
+  phoneNumber: String,
+  // orders: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: 'Order',
+  //   },
+  // ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 userSchema.post('save', function (doc, next) {
@@ -45,6 +68,6 @@ userSchema.statics.login = async function(email, password) {
   throw Error('incorrect email');
 };
 
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

@@ -3,17 +3,18 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const cors = require('cors');
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes')
 const productRoutes = require('./routes/productRoutes')
+const cartRoutes = require('./routes/cartRoutes')
+const userRoutes = require('./routes/userRoutes')
+const orderRoutes = require('./routes/OrderRoutes')
 
 const { requireAuth, requireAdmin } = require('./middleware/authMiddleware');
 const { errorHandlerMiddleware } = require('./middleware/errorHandlerMiddleware');
 
-
 const app = express();
-
-
 
 const corsOptions = {
   origin: 'http://localhost:3000', // Replace with your React app's domain
@@ -41,7 +42,9 @@ app.set('view engine', 'ejs');
 // database connection
 const dbURI = 'mongodb://127.0.0.1:27017/authDB';
 mongoose.connect(dbURI)
-  .then((result) => app.listen(3000))
+  .then((result) => {
+      app.listen(3000, () => console.log("listening on " + 3000))
+    })
   .catch((err) => console.log(err));
 
 // routes
@@ -49,6 +52,10 @@ mongoose.connect(dbURI)
 // app.get('/', (req, res) => res.render('home'));
 // app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));
 
+app.use('/upload', requireAuth, express.static(path.join(__dirname, 'upload')));
 app.get('/sample', (req, res) => res.status(200).send("okay"));
 app.use('/auth',authRoutes)
 app.use('/product', requireAuth, errorHandlerMiddleware, productRoutes)
+app.use('/cart', requireAuth, errorHandlerMiddleware, cartRoutes)
+app.use('/user', requireAuth, errorHandlerMiddleware, userRoutes)
+app.use('/order', requireAuth, errorHandlerMiddleware, orderRoutes)

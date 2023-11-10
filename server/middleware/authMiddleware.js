@@ -17,6 +17,7 @@ const requireAuth = (req, res, next) => {
         if (user) {
           req.session.userId = decodedToken.id
           req.session.isAdmin = user.isAdmin
+          req.session.username = user.username
         }
         console.log(req.session)
         next();
