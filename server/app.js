@@ -17,7 +17,7 @@ const { errorHandlerMiddleware } = require('./middleware/errorHandlerMiddleware'
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your React app's domain
+  origin: 'http://localhost:5173', // Replace with your React app's domain
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // Enable credentials (e.g., cookies, authorization headers)
 };
@@ -52,7 +52,7 @@ mongoose.connect(dbURI)
 // app.get('/', (req, res) => res.render('home'));
 // app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));
 
-app.use('/upload', requireAuth, express.static(path.join(__dirname, 'upload')));
+app.use('/upload', express.static(path.join(__dirname, 'upload')));
 app.get('/sample', (req, res) => res.status(200).send("okay"));
 app.use('/auth',authRoutes)
 app.use('/product', requireAuth, errorHandlerMiddleware, productRoutes)

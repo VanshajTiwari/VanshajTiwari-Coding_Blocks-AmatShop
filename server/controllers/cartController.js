@@ -12,9 +12,9 @@ module.exports.viewCart =  async (req, res) => {
       if (!cart) {
         return res.status(404).json({});
       }
-  
-      res.json(cart);
+      res.json(cart.items);
     } catch (error) {
+      console.log(error)
       res.status(500).json({ error: 'An error occurred' });
     }
   }
@@ -46,7 +46,7 @@ module.exports.addToCart = async (req, res) => {
       if (product) {
         cart.items.push({ product: productM._id, quantity, price: productM.price });
       }else {
-        res.status(500).json({ error: 'Invalid Item' });
+        return res.status(500).json({ error: 'Invalid Item' });
       }
       
     }
@@ -54,7 +54,7 @@ module.exports.addToCart = async (req, res) => {
     // Save the updated cart
     await cart.save();
 
-    res.json({ message: 'Product added to cart successfully', cart });
+    res.json(cart.items);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'An error occurred' });
@@ -65,25 +65,39 @@ module.exports.addToCart = async (req, res) => {
 module.exports.updateCartItem = async (req, res) => {
   try {
     const user = req.session.userId;
-    const { product, quantity } = req.body;
+    const op = req.body.data;
 
-    const cart = await UserCart.findOne({ user });
+    const cart = await UserCart.findOne({ user }).populate('items.product');
 
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
 
-    const cartItem = cart.items.find(item => item.product.equals(product));
-
-    if (!cartItem) {
-      return res.status(404).json({ error: 'Product not found in the cart' });
+    if (op.length === 0) {
+      return res.json(cart.items)
     }
 
-    cartItem.quantity = quantity;
-    await cart.save();
+    for (const [index, cartItem] of op.entries()) {
+      const {product, quantity} = cartItem
+      const prod = await Product.findById(product._id)
 
-    res.json({ message: 'Cart item updated successfully', cart });
+      if (cartItem.quantity > quantity) {
+        prod.stock += cart.items[index].quantity - quantity
+      }else {
+        prod.stock -= quantity - cart.items[index].quantity
+      }
+      prod.reviews = []
+      await prod.save();
+
+      cart.items[index].quantity = quantity;
+      cart.items[index].product.stock = prod.stock  
+      await cart.items[index].save();
+    }
+
+    await cart.save();
+    res.json(cart.items);
   } catch (error) {
+    console.log( "in update cart", error);
     res.status(500).json({ error: 'An error occurred' });
   }
 };
@@ -94,22 +108,24 @@ module.exports.removeFromCart = async (req, res) => {
     const user = req.session.userId;
     const { product } = req.body;
 
-    const cart = await UserCart.findOne({ user });
+    const cart = await UserCart.findOne({ user }).populate('items.product');;
 
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
 
-    const cartItemIndex = cart.items.findIndex(item => item.product.equals(product));
+    // const cartItemIndex = cart.items.findIndex(item => item.product == product);
 
-    if (cartItemIndex === -1) {
-      return res.status(404).json({ error: 'Product not found in the cart' });
-    }
+    const newCart = cart.items.filter(item => item._id != product)
 
-    cart.items.splice(cartItemIndex, 1);
+    // if (cartItemIndex === -1) {
+    //   return res.status(404).json({ error: 'Product not found in the cart' });
+    // }
+
+    cart.items = [...newCart];
     await cart.save();
 
-    res.json({ message: 'Product removed from cart successfully', cart });
+    res.json(newCart);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred' });
   }

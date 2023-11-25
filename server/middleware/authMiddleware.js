@@ -5,6 +5,8 @@ const e = require('express');
 const requireAuth = (req, res, next) => {
   const token = req.cookies.jwt;
 
+  // console.log(req)
+
   // check json web token exists & is verified
   if (token) {
     jwt.verify(token, 'mysecret', async (err, decodedToken) => {

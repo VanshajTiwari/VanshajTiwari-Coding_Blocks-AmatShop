@@ -18,6 +18,17 @@ module.exports.getUser = async (req, res) => {
     }
 }
 
+module.exports.deleteUser = async (req, res) => {
+    try {
+      const userId = req.params.userId.substring(1);
+      await User.findOneAndDelete({ _id: userId });
+      res.status(200).send("deleted user");
+    } catch (err) {
+      const errors = handleErrors(err);
+      res.status(400).send({ errors });
+    }
+};
+
 module.exports.updateUserDetail = async (req, res) => {
     try {
         const userId = req.session.userId

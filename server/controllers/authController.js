@@ -143,10 +143,10 @@ module.exports.login_get = (req, res) => {
 };
 
 module.exports.signup_post = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
-    const user = await User.create({ email, password});
+    const user = await User.create({ username, email, password});
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
@@ -177,8 +177,9 @@ module.exports.login_post = async (req, res) => {
 };
 
 module.exports.logout_get = (req, res) => {
+  console.log("logout hit" )
   res.cookie("jwt", "", { maxAge: 1 });
-  res.redirect("/");
+  res.send("logged out");
 };
 
 module.exports.ResetTokenPost = async (req, res) => {
