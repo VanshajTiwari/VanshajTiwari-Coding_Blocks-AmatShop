@@ -1,6 +1,7 @@
 const UserCart = require('../models/Cart'); // Import your UserCart model
 const Order = require('../models/Orders');
 const Product = require('../models/Product');
+const stripe = require("stripe")("sk_test_51OCFDASDy7jxIvBgNo75GY6Cgp02FlY0HzI2RHDXM6VwmKiJc6CKytXB7aB22EDNXjpBsCxhSdFVSzvX27zfKWJi00oChJU1rh"); 
 
 module.exports.viewCart =  async (req, res) => {
     try {
@@ -166,3 +167,32 @@ module.exports.checkout = async (req, res) => {
       res.status(500).json({ error: 'An error occurred during checkout' });
     }
   };
+
+
+
+  module.exports.checkout2 = async(req, res) => {
+    const {products} = req.body;
+    const lineItems=products.map((product)=>({
+      price_data:{
+        currency:"inr",
+        product_data:{
+          name:product.product.title
+        },
+        unit_amount:product.price*100
+      },
+      quantity:product.quantity
+    }))
+  
+    const session= await stripe.checkout.sessions.create({
+      payment_method_types:["card"],
+      line_items:lineItems,
+      mode:"payment",
+      success_url:"http://localhost:5173/success",
+      cancel_url:"http://localhost:5173/cancel",
+    });
+  
+    res.json({id:session.id})
+  }
+
+
+

@@ -56,7 +56,7 @@ export function Cart() {
       "Content-Type": "application/json",
     };
     const response = await axios.post(
-      "http://localhost:8080/api/create-checkout-session",
+      "http://localhost:3000/cart/create-checkout-session",
       body,
       { headers }
     );

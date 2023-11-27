@@ -56,6 +56,6 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')));
 app.get('/sample', (req, res) => res.status(200).send("okay"));
 app.use('/auth',authRoutes)
 app.use('/product', requireAuth, errorHandlerMiddleware, productRoutes)
-app.use('/cart', requireAuth, errorHandlerMiddleware, cartRoutes)
+app.use('/cart', errorHandlerMiddleware, cartRoutes)
 app.use('/user', requireAuth, errorHandlerMiddleware, userRoutes)
 app.use('/order', requireAuth, errorHandlerMiddleware, orderRoutes)
