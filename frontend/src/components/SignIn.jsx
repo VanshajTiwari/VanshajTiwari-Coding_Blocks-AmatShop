@@ -1,12 +1,14 @@
 import React,{useState} from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react'
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPass] = useState("");
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +21,9 @@ export function SignIn() {
       }, { withCredentials: true});
 
       // Handle the response, e.g., redirect to a new page or show a success message
+      if (response) {
+        navigate('/Home')
+      }
       console.log('User signed up successfully', response.data);
       toast.success('Sign Up Successfully');
     } catch (error) {

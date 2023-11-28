@@ -23,7 +23,7 @@ export function NavBar() {
     try{
       const response = await axios.get('http://localhost:3000/auth/logout', { withCredentials: true});
       if (response) {
-        navigate('/Home')
+        navigate('/signIn')
       }
     }catch (err) {
       console.log(err)

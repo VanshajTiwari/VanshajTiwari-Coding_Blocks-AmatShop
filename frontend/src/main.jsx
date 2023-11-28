@@ -35,8 +35,9 @@ const router = createBrowserRouter(
     <>
     { !isAdmin?(
       <Route path='/' element={<Layout />}>
-        <Route index element={<Home />} />
+        {/* <Route index element={<Home />} /> */}
         <Route path='/SignIn' element={<SignIn />} />
+        <Route index element={<SignIn />} />
         <Route path='/SignUp' element={<SignUp />} />
         <Route path='/Home' element={<Home />} />
         <Route path='/Cart' element={<Cart />} />

@@ -12,9 +12,14 @@ module.exports.getAllOrders = async (req, res) => {
 module.exports.getUserOrder = async (req, res) => {
     try {
         const userId = req.session.userId
-        const orders = await Order.find({ user: userId });
+        const orders = await Order.find({ user: userId }).populate("products.product");
+        let retArr = []
 
-        res.status(200).json(orders);
+        orders.forEach(order => {
+            retArr = [...retArr, ...order.products]
+        })
+
+        res.status(200).json(retArr);
     }catch (err) {
         res.status(404).json("error getting orders")
     }

@@ -11,6 +11,7 @@ export const FETCH_CART = 'FETCH_CART'
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
 export const UPDATE_CART = 'UPDATE_CART'
 export const LCHANGE_CART_QUANTITY = 'LCHANGE_CART_QUANTITY'
+export const FETCH_USER_ORDER = 'FETCH_USER_ORDER'
 
 export const addProducts = (formData) => ({
   type: ADD_PRODUCTS,
@@ -66,4 +67,8 @@ export const updateCart = (prod) => ({
 export const LchangeCartQuantity = (prod) => ({
   type: LCHANGE_CART_QUANTITY,
   payload: prod
+})
+
+export const fetchUserOrder = () => ({
+  type: FETCH_USER_ORDER,
 })

@@ -58,7 +58,9 @@ export function Cart() {
     const response = await axios.post(
       "http://localhost:3000/cart/create-checkout-session",
       body,
-      { headers }
+      { withCredentials: true},
+      { headers },
+
     );
     const session = response.data;
     const result = stripe

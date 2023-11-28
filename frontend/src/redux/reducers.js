@@ -35,6 +35,8 @@ const OrderReducer = (state = [], action ) => {
   switch (action.type) {
     case 'FETCH_ALL_ORDER_SUCCESS':
       return [...action.payload]
+    case 'FETCH_USER_ORDER_SUCCESS':
+      return [...action.payload]
     default:
       return state
   }

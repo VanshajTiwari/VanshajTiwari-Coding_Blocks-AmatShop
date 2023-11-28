@@ -1,7 +1,7 @@
 // src/redux/sagas.js
 import { takeEvery, put, call } from 'redux-saga/effects';
 import axios from 'axios';
-import { ADD_PRODUCTS, ADD_TO_CART, DELETE_PRODUCTS, DELETE_USERS, FETCH_ALL_ORDERS, FETCH_ALL_USERS, FETCH_CART, FETCH_PRODUCTS, LCHANGE_CART_QUANTITY, REMOVE_FROM_CART, UPDATE_CART, UPDATE_PRODUCTS } from './actions';
+import { ADD_PRODUCTS, ADD_TO_CART, DELETE_PRODUCTS, DELETE_USERS, FETCH_ALL_ORDERS, FETCH_ALL_USERS, FETCH_CART, FETCH_PRODUCTS, FETCH_USER_ORDER, LCHANGE_CART_QUANTITY, REMOVE_FROM_CART, UPDATE_CART, UPDATE_PRODUCTS } from './actions';
 
 // Worker Saga: Handles form submission
 function* addProductSaga(action) {
@@ -148,6 +148,16 @@ function* LchangeCartQuantity(action){
   }
 }
 
+function* fetchUserOrder() {
+  try {
+    // Simulate API call
+    const response = yield call(axios.get, 'http://localhost:3000/order/userOrder', { withCredentials: true});
+    yield put({ type: 'FETCH_USER_ORDER_SUCCESS', payload: response.data });
+  } catch (error) {
+    yield put({ type: 'FETCH_USER_ORDER_SUCCESS', payload: error.message });
+  }
+}
+
 function* rootSaga() {
   yield takeEvery(ADD_PRODUCTS, addProductSaga);
   yield takeEvery(UPDATE_PRODUCTS, updateProductSaga);
@@ -161,6 +171,7 @@ function* rootSaga() {
   yield takeEvery(REMOVE_FROM_CART, removeFromCart)
   yield takeEvery(UPDATE_CART, updateCart);
   yield takeEvery(LCHANGE_CART_QUANTITY, LchangeCartQuantity)
+  yield takeEvery(FETCH_USER_ORDER, fetchUserOrder)
 }
 
 export default rootSaga;

@@ -21,7 +21,7 @@ const requireAuth = (req, res, next) => {
           req.session.isAdmin = user.isAdmin
           req.session.username = user.username
         }
-        console.log(req.session)
+        // console.log(req.session)
         next();
       }
     });
